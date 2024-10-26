@@ -19,29 +19,18 @@ def search_reddit(product):
 	results = [x['href'] for x in searcher.text(query) if "reddit" in x['href']]
 	return results
 
-#print(search_reddit("Bissell Zing"))
+def get_comments(url):
+	try: 
+		submission = reddit.submission(url=url)
+		submission.comments.replace_more(limit=0)
+
+		return [(x.body, x.score) for x in submission.comments if x.stickied == False]
+	except Exception as e:
+		print(f"An error occurred: {e}")
+		return []
 
 
-def get_comments_from_posts(urls):
-	comments_data = []
-
-	for url in urls:
-		try: 
-			submission = reddit.submission(url=url)
-			submission.comments.replace_more(limit=0)
-
-			for comment in submission.comments.list():
-				comments_data.append({
-					"comment": comment.body,
-					"upvotes": comment.score
-				})
-		except Exception as e:
-			print(f"An error occurred: {e}")
-	return comments_data
-
-product_urls = search_reddit("Bissell Zing")
-comments_and_upvotes = get_comments_from_posts(product_urls)
-for item in comments_and_upvotes:
-	print("comment:", item["comment"])
-	print("Upvotes:", item["upvotes"])
-	print("-" * 50)
+def all_comments(product):
+	for x in search_reddit(product):
+		for y in get_comments(x):
+			yield y
