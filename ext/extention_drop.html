@@ -94,23 +94,24 @@
         // Function to fetch data from URL and display it
         async function fetchData() {
             const query = document.getElementById("searchBar").value;
-            const url = `https://example.com/api/search?query=${encodeURIComponent(query)}`;
+            const url = `http://10.125.190.27:8000/search/${query}`;
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+            //try {
+                const response = await fetch(url, {mode: 'no-cors'});
+                console.log("yeah");
+                const data = await response.text();
 
                 // Display data in #displayArea
                 document.getElementById("displayArea").innerHTML = `
                     <h3>Search Results</h3>
-                    <p>${JSON.stringify(data, null, 2)}</p>
+                    <p>${data}</p>
                 `;
-            } catch (error) {
+            /*} catch (err) {
                 document.getElementById("displayArea").innerHTML = `
                     <p>Error fetching data. Please try again later.</p>
                 `;
-                console.error("Error:", error);
-            }
+                console.error("Error:", err);
+            }*/
         }
 
     </script>
