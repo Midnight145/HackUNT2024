@@ -97,10 +97,11 @@
             const url = `http://10.125.190.27:8000/search/${query}`;
 
             //try {
-                const response = await fetch(url, {mode: 'no-cors'});
+                const response = await fetch(url)
                 console.log("yeah");
                 const data = await response.text();
-
+                console.log(response);
+                console.log(data);
                 // Display data in #displayArea
                 document.getElementById("displayArea").innerHTML = `
                     <h3>Search Results</h3>

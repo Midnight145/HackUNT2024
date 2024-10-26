@@ -9,6 +9,7 @@ app = fastapi.FastAPI()
 
 from fastapi import FastAPI, Depends, Response, Request, HTTPException
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from typing import Optional
 SECRET_KEY = "supersecretkey"  # Use a strong, unique key in production
 
@@ -20,6 +21,15 @@ app.add_middleware(
     session_cookie="session_id",  # Name of the session cookie
 )
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(db.route)
 app.include_router(auth.route)
