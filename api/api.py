@@ -1,34 +1,44 @@
 import os
 
 import fastapi
-from auth0.authentication import Database, GetToken
+from api import db
+from api import auth
 from dotenv import load_dotenv
 
-import search
-from api import lib
+
 
 load_dotenv()
-app = fastapi.FastAPI()
-auth0 = Database(domain=os.getenv("DOMAIN"), client_id=os.getenv("CLIENT_ID"))
-get_token = GetToken(domain=os.getenv("DOMAIN"), client_id=os.getenv("CLIENT_ID"))
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
 
 
-@app.post("/login")
-def login(username: str, password: str):
-    return get_token.login(username, password, realm='Username-Password-Authentication')
+print(os.getenv("DOMAIN"), os.getenv("CLIENT_ID"))
 
-@app.post("/register")
-def register(username: str, password: str):
-    return auth0.signup(username, password, connection='Username-Password-Authentication')
+# Replace these with your actual Auth0 credentials
+AUTH0_DOMAIN = os.getenv("DOMAIN")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+# REDIRECT_URI = "YOUR_REDIRECT_URI"
 
-@app.post("/search")
-def search_(query: str):
-    return search.search_reddit(query)
 
-@app.post("/fetch_viewed_products")
-def fetch_viewed_products(token: str):
-    return lib.fetch_viewed_products(token)
+
+
+
+
+if __name__ == "__main__":
+    db.init()
+    username = "rubikscubeboy27@gmail.com"
+    password = "jQ8LiX7zvlmi4OIx"
+    auth_response = login_with_username_password(username, password)
+    if auth_response:
+        print("Login successful:", auth_response)
+        domain = AUTH0_DOMAIN
+        jwks_url = 'https://{}/.well-known/jwks.json'.format(domain)
+        issuer = 'https://{}/'.format(domain)
+        sv = AsymmetricSignatureVerifier(jwks_url)
+        tv = TokenVerifier(signature_verifier=sv, issuer=issuer, audience=CLIENT_ID)
+        token = tv.verify(auth_response["id_token"])
+        print("Token verified:", token)
+        print(token["sub"])
+        user = db.create_user_row(token["sub"], token["nickname"], token["name"])
+        db.push_user(user)
+    else:
+        print("Login failed.")

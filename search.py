@@ -2,17 +2,16 @@ from duckduckgo_search import DDGS
 import praw
 import json
 
-
-searcher = DDGS()
-
+# noinspection PyTypeChecker
 with open("client_info.json", "r") as f:
 	info = json.loads(f.read())
 
-reddit = praw.Reddit(
-	client_id = info["client_id"],
-	client_secret = info["client_secret"],
-	user_agent = "YOUR_USER_AGENT"
+reddit: praw.Reddit = praw.Reddit(
+	client_id=info["client_id"],
+	client_secret=info["client_secret"],
+	user_agent="YOUR_USER_AGENT"
 )
+searcher = DDGS()
 
 def search_reddit(product):
 	query = product + " review site:reddit.com"
