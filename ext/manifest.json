@@ -1,0 +1,11 @@
+{
+  "description": "Extension",
+  "manifest_version": 2,
+  "name": "Hackathon",
+  "version": "1.0",
+  "homepage_url": "https://github.com/Midnight145/HackUNT2024",
+  "background": {
+      "scripts": ["main.js"]
+    },
+  "permissions": ["contextMenus"]
+}
