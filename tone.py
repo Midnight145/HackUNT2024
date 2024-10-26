@@ -36,10 +36,10 @@ def summarize(string: str):
     return ' '.join(final_sentences)
 
 def get_tone(text):
-	doc = nlp(summarize(text))
-	return doc._.blob.polarity * (1 - doc._.blob.subjectivity)
+    doc = nlp(summarize(text))
+    return doc._.blob.polarity * (1 - doc._.blob.subjectivity)
 
 
-print(get_tone(summarize(text)))
+print(get_tone(summarize("I love this product!! so super awesome!!")))
 
 
