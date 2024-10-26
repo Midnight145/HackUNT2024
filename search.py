@@ -16,7 +16,7 @@ reddit = praw.Reddit(
 
 def search_reddit(product):
 	query = product + " review site:reddit.com"
-	results = [x['href'] for x, _ in zip(searcher.text(query), range(5)) if "reddit" in x['href']]
+	results = [x['href'] for x, _ in zip(searcher.text(query), range(3)) if "reddit" in x['href']]
 	return results
 
 def get_comments(url):
