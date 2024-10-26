@@ -160,6 +160,7 @@ bin/
 include/
 pyvenv.cfg
 lib/
+share/
 .DS_Store
 pyrightconfig.json
 

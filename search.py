@@ -16,7 +16,7 @@ reddit = praw.Reddit(
 
 def search_reddit(product):
 	query = product + " review site:reddit.com"
-	results = [x['href'] for x in searcher.text(query) if "reddit" in x['href']]
+	results = [x['href'] for x, _ in zip(searcher.text(query), range(5)) if "reddit" in x['href']]
 	return results
 
 def get_comments(url):
@@ -28,7 +28,6 @@ def get_comments(url):
 	except Exception as e:
 		print(f"An error occurred: {e}")
 		return []
-
 
 def all_comments(product):
 	for x in search_reddit(product):
