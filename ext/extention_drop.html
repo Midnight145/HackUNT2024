@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown with Search Bar</title>
+    <style>
+        /* CSS to style the dropdown content */
+        #dropdownContent {
+            position: absolute;
+            top: 50px; /* Adjust depending on button size */
+            background-color:tan;
+            min-width: 300px;
+            min-height: 500px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            display: none; /* Initially hidden */
+            padding: 10px;
+        }
+        #searchBar{
+            width: 80%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        button, p{
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HTML structure with button and dropdown content -->
+    <button id="extensionButton">Open Dropdown</button>
+    <div id="dropdownContent">
+        <!-- Dropdown content here -->
+         <input type="text" id="searchBar" placeholder="Search..." onkeyup="searchFunction()">
+        <p>Option 1</p>
+        <p>Option 2</p>
+        <button onclick="alert('Button 1 clicked')">Button 1</button>
+        <button onclick="alert('Button 2 clicked')">Button 2</button>
+    </div>
+
+    <script>
+        // JavaScript to toggle dropdown visibility
+        document.getElementById("extensionButton").addEventListener("click", function () {
+            const dropdown = document.getElementById("dropdownContent");
+            if (dropdown.style.display === "none") {
+                dropdown.style.display = "block";
+            } else {
+                dropdown.style.display = "none";
+            }
+        });
+
+        function searchFunction() {
+            const input = document.getElementByID("searchBar").value.toLowerCase();
+            const items = document.querySelectorAll("#dropdownContent p");
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(input)){
+                    item.style.display = ""; // show item
+                } else {
+                    item.style.display = "none"; // hide item
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>
