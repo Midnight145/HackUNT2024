@@ -142,7 +142,7 @@ def register(login_data: LoginModel, resp: Response) -> dict:
                 httponly=True,
                 secure=True,
                 samesite="none",
-                path="/",
+                path="/"
             )
 
             # this is a new user, we need to add them to the database

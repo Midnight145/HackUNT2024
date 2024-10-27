@@ -98,11 +98,26 @@ def fetch_review(url: str) -> dict | None:
 def fetch_product(product_id: str, resp: Response) -> Mapping:
     collection = db["products"]
     product = collection.find_one({"product_id": product_id})
+    if product is None:
+        resp.status_code = 404
+        return {"message": "404 Not Found"}
     product.pop("_id", None)  # pydantic models don't like ObjectId so we remove it
     if product:
         resp.status_code = 200
         return product
     return {"message": "404 Not Found"}
+
+def fetch_product_by_name(product_name: str) -> dict | None:
+    """
+    Fetches a product by name
+    :param product_name: the name of the product
+    :return: the product if found, None otherwise
+    """
+    collection = db["products"]
+    product = collection.find_one({"product_name": product_name})
+    if product:
+        return dict(product)
+    return None
 
 @route.get("/db/fetch_user/{user_id}")
 def fetch_user(user_id: str, resp: Response) -> dict:

@@ -43,7 +43,6 @@ class DynamicCORSMiddleware(BaseHTTPMiddleware):
             return response
 
         # Handle CORS for actual requests
-        print("Handling actual request")
         response = await call_next(request)
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE"
@@ -92,7 +91,12 @@ def search(product_name: str, request: Request):
     product_uuid = str(uuid4())
     product["product_id"] = product_uuid
     product["product_name"] = product_name
-    db.push_item(product, "products")
+    # check if product with same name already exists
+    existing_product = db.fetch_product_by_name(product_name)
+    if existing_product:
+        product_uuid = existing_product["product_id"]
+    else:
+        db.push_item(product, "products")
 
     # We also need to update the user's seen products so we have it added to their history
     seen_products = db.seen_products(sub)
