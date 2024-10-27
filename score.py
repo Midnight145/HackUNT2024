@@ -1,11 +1,15 @@
+from typing import Any
+
 from tone import get_tone
 from search import all_comments
 import math
 
-def get_scores(product):
+def get_scores(product) -> list[tuple[float | Any, Any]]:
 	return [(get_tone(x[0].split(".")[0]) * math.sqrt(x[1]), x[0]) for x in all_comments(product) if x[1] > 0]
 
-def parse(prod):
+
+# noinspection PyTypeChecker
+def parse(prod) -> dict:
 	scores = get_scores(prod)
 	avg = sum((x[0] for x in scores)) / len(scores)
 	return {

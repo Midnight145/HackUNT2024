@@ -1,9 +1,8 @@
-import spacy
 import eng_spacysentiment
 
 nlp = eng_spacysentiment.load()
 
-def get_tone(text):
+def get_tone(text) -> float:
     try:
         cats = nlp(text).cats
         pos = cats['positive']

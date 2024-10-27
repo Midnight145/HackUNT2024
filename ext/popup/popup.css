@@ -1,0 +1,42 @@
+/* i have no idea what i'm doing */
+/* it took me half an hour to remove a border */
+
+* {
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+    box-sizing: border-box; /* Include padding and border in width/height */
+}
+
+html, body {
+    box-sizing: border-box;
+    width: 300px;
+    height: 450px;
+    border: none;
+    box-shadow: none;
+}
+
+#loginForm,
+#mainContent {
+    width: 100%; /* Full width of the parent */
+    height: 100%; /* Full height of the parent */
+}
+
+#loginForm {
+    background-color: #f1f1f1;
+}
+
+#mainContent {
+    background-color: tan;
+    display: none; /* Initially hidden */
+}
+
+.search-container {
+    display: flex; /* Align items horizontally */
+    align-items: center; /* Center vertically */
+    margin-bottom: 10px;
+}
+
+#search_bar {
+    width: 70%;
+    padding: 5px;
+}
