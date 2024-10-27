@@ -163,8 +163,30 @@ async function fetchData(click, query = "") {
     });
     const json = await response.json();
     // Display data in #displayArea
-    document.getElementById("displayArea").innerHTML = `
+
+
+    document.getElementById("search-result").innerHTML = `${json.project_name}`;
+    document.getElementById("review-count").innerHTML = `${json.num_reviews}`;
+    document.getElementById("review-pos").innerHTML = `${json.positive_reviews} Good`;
+    document.getElementById("review-neu").innerHTML = `${json.num_reviews - json.positive_reviews - json.negative_reviews} Neutral`;
+    document.getElementById("review-neg").innerHTML = `${json.negative_reviews} Bad`;
+
+
+    const starContainer = document.getElementById("stars");
+    for (let i = 0; i < starContainer.children.count; i++) {
+        starContainer.children[i].classList.remove("full");
+        starContainer.children[i].classList.remove("half");
+        starContainer.children[i].classList.add("empty");
+    }
+    for (let i = 0; i < json.stars; i++) {
+        starContainer.children[i].classList.add("full");
+    }
+    if (Math.round(json.stars) != Math.floor(json.stars)) {
+        starContainer.children[Math.floor(json.stars)].classList.add("half");
+    }
+
+    /*document.getElementById("displayArea").innerHTML = `
         <h3>Search Results for<br>${json.product_name}</h3>
         <p>Stars: ${json.stars}<br>Total Reviews: ${json.num_reviews}<br>Pos/Neu/Neg: ${json.positive_reviews}/${json.num_reviews - json.positive_reviews - json.negative_reviews}/${json.negative_reviews}</p>
-    `;
+    `;*/
 }
