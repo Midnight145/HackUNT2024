@@ -130,3 +130,14 @@ def register(login_data: Login, resp: Response):
 def logout(resp: Response):
     resp.delete_cookie("session_id")
     return {"message": "Logged out"}
+
+
+@route.get("/auth/verify")
+def verify(resp: Response, request: Request):
+    cookie = request.cookies.get("session_id")
+    token = verify_session_cookie(cookie)
+    if token:
+        resp.status_code = 200
+        return {"message": "Session valid", "token": token}
+    resp.status_code = 401
+    return {"message": "Session invalid"}

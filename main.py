@@ -20,7 +20,8 @@ class DynamicCORSMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         print(request.cookies)
         origin = request.headers.get("origin")
-
+        if not origin:
+            origin = "*"
 
         # Handle CORS for preflight requests
         if request.method == "OPTIONS":
@@ -80,7 +81,7 @@ def search(product_name: str, request: Request, response: Response):
 
     product_uuid = str(uuid4())
     product["product_id"] = product_uuid
-
+    product["product_name" = product_name
     db.push_item(product, "products")
     seen_products = db.seen_products(sub)
     if not seen_products:
