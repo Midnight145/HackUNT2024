@@ -61,6 +61,14 @@ document.addEventListener('DOMContentLoaded',
             document.getElementById("dashboard").style.display = "block";
             document.getElementById("results").style.display = "none";
         });
+
+        var items = document.querySelectorAll("#historyList *");
+        for (var i = 0; i < items.length; i++) {
+            items[i].addEventListener("click", function() {
+                document.getElementById("search_bar").value = this.textContent;
+            });
+        }
+
         // document.getElementById("logoutButton").addEventListener("click", logout);
 
     }, false
