@@ -22,9 +22,21 @@ document.addEventListener('DOMContentLoaded',
         }
         document.getElementById("loginButton").addEventListener("click", login);
         document.getElementById("searchButton").addEventListener("click", fetchData);
+        document.getElementById("logoutButton").addEventListener("click", logout);
 
     }, false
 );
+
+async function logout() {
+    const url = API_URL + `auth/logout`;
+    let resp = await fetch(url, {
+        method: "GET",
+        credentials: 'include'
+    });
+    if (resp.ok) {
+        toggle_display();
+    }
+}
 
 async function login() {
     const username = document.getElementById("username").value;
