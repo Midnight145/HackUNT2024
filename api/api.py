@@ -16,10 +16,6 @@ print(os.getenv("DOMAIN"), os.getenv("CLIENT_ID"))
 AUTH0_DOMAIN = os.getenv("DOMAIN")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-# REDIRECT_URI = "YOUR_REDIRECT_URI"
-
-
-
 
 
 

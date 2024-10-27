@@ -4,7 +4,7 @@ class User(BaseModel):
     username: str
     email: str
     userid: str
-    reviews: list[dict] = []
+    seen_products: list[str]
 
 class Product(BaseModel):
     productid: str

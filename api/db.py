@@ -44,29 +44,49 @@ def fetch_product(product_id: str, resp: Response):
         return product
     return {"message": "404 Not Found"}
 
-@route.post("/db/store_product")
-def store_product(product: Product, resp: Response):
+def get_user(user_id: str):
+    collection = db["users"]
+    user = collection.find_one({"userid": user_id})
+    if not user:
+        return None
+    user.pop("_id", None)
+    if user:
+        return dict(user)
+    return None
+
+def seen_products(user_id: str):
+    collection = db["users"]
+    user = collection.find_one({"userid": user_id})
+    if user:
+        return user["seen_products"]
+    return None
+
+def update_seen_products(user_id: str, seen_products: list):
+    collection = db["users"]
+    collection.update_one({"userid": user_id}, {"$set": {"seen_products": seen_products}})
+
+def store_product(product: Product):
     if push_item(product, "products"):
-        resp.status_code = 200
         return {"message": "200 OK"}
     return {"message": "500 Internal Server Error"}
 
 @route.get("/db/fetch_user/{user_id}")
 def fetch_user(user_id: str, resp: Response):
-    collection = db["users"]
-    user = collection.find_one({"userid": user_id})
-    user.pop("_id", None)
+    user = get_user(user_id)
     if user:
         resp.status_code = 200
         return dict(user)
     return {"message": "404 Not Found"}
 
-@route.post("/db/store_user")
-def store_user(user: User, resp: Response):
+def store_user(user: User):
     if push_item(user, "users"):
-        resp.status_code = 200
-        return {"message": "200 OK"}
-    return {"message": "500 Internal Server Error"}
+        return {
+            "userid": user.userid,
+            "username": user.username,
+            "email": user.email,
+            "seen_products": user.seen_products
+        }
+    return None
 
 @route.get("/db/fetch_review/{review_id}")
 def fetch_review(review_id: str, resp: Response):
