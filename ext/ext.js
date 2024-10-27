@@ -57,6 +57,10 @@ document.addEventListener('DOMContentLoaded',
         }
         document.getElementById("loginButton").addEventListener("click", login);
         document.getElementById("searchButton").addEventListener("click", fetchData);
+        document.getElementById("backBtn").addEventListener("click", function() {
+            document.getElementById("dashboard").style.display = "block";
+            document.getElementById("results").style.display = "none";
+        });
         // document.getElementById("logoutButton").addEventListener("click", logout);
 
     }, false
@@ -164,8 +168,11 @@ async function fetchData(click, query = "") {
     const json = await response.json();
     // Display data in #displayArea
 
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("results").style.display = "block";
 
-    document.getElementById("search-result").innerHTML = `${json.project_name}`;
+
+    document.getElementById("search-result").innerHTML = `${json.product_name}`;
     document.getElementById("review-count").innerHTML = `${json.num_reviews}`;
     document.getElementById("review-pos").innerHTML = `${json.positive_reviews} Good`;
     document.getElementById("review-neu").innerHTML = `${json.num_reviews - json.positive_reviews - json.negative_reviews} Neutral`;
@@ -173,7 +180,7 @@ async function fetchData(click, query = "") {
 
 
     const starContainer = document.getElementById("stars");
-    for (let i = 0; i < starContainer.children.count; i++) {
+    for (let i = 0; i < starContainer.childElementCount; i++) {
         starContainer.children[i].classList.remove("full");
         starContainer.children[i].classList.remove("half");
         starContainer.children[i].classList.add("empty");
@@ -182,11 +189,10 @@ async function fetchData(click, query = "") {
         starContainer.children[i].classList.add("full");
     }
     if (Math.round(json.stars) != Math.floor(json.stars)) {
-        starContainer.children[Math.floor(json.stars)].classList.add("half");
+        starContainer.children[Math.round(json.stars) + 1].classList.add("half");
+        starContainer.children[Math.round(json.stars) + 1].classList.remove("full");
     }
 
-    /*document.getElementById("displayArea").innerHTML = `
-        <h3>Search Results for<br>${json.product_name}</h3>
-        <p>Stars: ${json.stars}<br>Total Reviews: ${json.num_reviews}<br>Pos/Neu/Neg: ${json.positive_reviews}/${json.num_reviews - json.positive_reviews - json.negative_reviews}/${json.negative_reviews}</p>
-    `;*/
+    document.getElementById("top-pos").innerHTML = `${json.highest[1]}`;
+    document.getElementById("top-neg").innerHTML = `${json.lowest[1]}`;
 }
