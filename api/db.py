@@ -88,15 +88,10 @@ def store_user(user: User):
         }
     return None
 
-@route.get("/db/fetch_review/{review_id}")
-def fetch_review(review_id: str, resp: Response):
+def fetch_review(url: str):
     collection = db["reviews"]
-    review = collection.find_one({"review_id": review_id})
-    review.pop("_id", None)
-    if review:
-        resp.status_code = 200
-        return review
-    return {"message": "404 Not Found"}
+    review = collection.find_one({"url": url})
+    return review
 
 @route.post("/db/store_review")
 def store_review(review: Review, resp: Response):
