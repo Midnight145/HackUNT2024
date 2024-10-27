@@ -26,8 +26,6 @@ document.addEventListener('DOMContentLoaded',
         document.getElementById("searchButton").addEventListener("click", fetchData);
         document.getElementById("logoutButton").addEventListener("click", logout);
 
-
-
     }, false
 );
 
@@ -124,18 +122,15 @@ async function check_logged_in() {
 async function fetchData(click, query = "") {
     // "clamps" the search string to the input box if it's empty
     const to_search =  query === "" ? document.getElementById("search_bar").value : query;
-    console.log(to_search);
-    console.log(query);
-    console.log(document.getElementById("search_bar").value);
     const url = API_URL + `search/${encodeURIComponent(to_search)}`;
     const response = await fetch(url, {
         method: "GET",
         credentials: "include"
     });
-    const data = await response.text();
+    const json = await response.json();
     // Display data in #displayArea
     document.getElementById("displayArea").innerHTML = `
-        <h3>Search Results</h3>
-        <p>${data}</p>
+        <h3>Search Results for<br>${json.product_name}</h3>
+        <p>Stars: ${json.stars}<br>Total Reviews: ${json.num_reviews}<br>Pos/Neu/Neg: ${json.positive_reviews}/${json.num_reviews - json.positive_reviews - json.negative_reviews}/${json.negative_reviews}</p>
     `;
 }
