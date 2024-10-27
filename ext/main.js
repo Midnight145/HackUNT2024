@@ -6,13 +6,13 @@ browser.contextMenus.create({
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
 	if (info.menuItemId === "search-review") {
-        const args = { search_str: info.selectionText };
         browser.browserAction.openPopup();
-        console.log("Sending message")
+
+        // We run into a race condition here, where the popup is not yet loaded
+        // This sucks, but I don't know how to fix it, so I just added a timeout :D
         setTimeout(() => {
-            browser.runtime.sendMessage({ args: args });
+            browser.runtime.sendMessage({ search_str: info.selectionText });
         }, 100);
-        console.log("Sent message")
     }
 });
 

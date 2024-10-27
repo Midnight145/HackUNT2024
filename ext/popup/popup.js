@@ -1,37 +1,27 @@
-        browser.runtime.onMessage.addListener(async (message) => {
-    if (message.args) {
-        const to_search = message.args.search_str; // Accessing search_str directly
+const API_URL = "https://hackathon.midnight.wtf/"
+
+// noinspection JSDeprecatedSymbols,JSUnresolvedReference
+browser.runtime.onMessage.addListener(async (message) => {
+    // Received from context menu activation
+    // We basically "emulate" the search button click, or display the login form
+    if (message.search_str) {
         if (await check_logged_in()) {
-            await fetchData(to_search);
+            await fetchData(message.search_str);
         } else {
             await login();
         }
-
-        console.log(message.args); // Log the arguments
-        // Use message.args to populate your popup UI
     }
 });
 
 
 document.addEventListener('DOMContentLoaded',
   async function () {
-        const logged_in = await check_logged_in();
-
-        if (logged_in) {
-            console.log("User is logged in");
-            document.getElementById("loginForm").style.display = "none";
-            document.getElementById("mainContent").style.display = "block";
-
-        } else {
-            console.log("User is not logged in");
-            document.getElementById("loginForm").style.display = "block";
-            document.getElementById("mainContent").style.display = "none";
+        if (await check_logged_in()) {
+            // defaults to the login screen, we want to skip it if we're already logged in
+            toggle_display();
         }
         document.getElementById("loginButton").addEventListener("click", login);
         document.getElementById("searchButton").addEventListener("click", fetchData);
-        console.log("Registering listener");
-
-      console.log("Registered listener");
 
     }, false
 );
@@ -39,7 +29,7 @@ document.addEventListener('DOMContentLoaded',
 async function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-    const url = `https://hackathon.midnight.wtf/auth/login`;
+    const url = API_URL + `auth/login`;
     const obj = {
         username: username,
         password: password
@@ -50,47 +40,41 @@ async function login() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(obj),
-        credentials: 'include',
-        mode: "cors",
+        credentials: 'include'
     })
-    const data = await resp.json();
-    console.log(data);
     if (resp.ok) {
-        // alert("Login successful!");
-        document.getElementById("loginForm").style.display = "none";  // Hide login form
-        document.getElementById("mainContent").style.display = "block"; // Show main content
+        toggle_display();
     } else {
         // alert("Incorrect username or password.");
     }
 }
 
+function toggle_display() {
+    const loginForm = document.getElementById("loginForm");
+    const mainContent = document.getElementById("mainContent");
+
+    const isLoginHidden = loginForm.style.display === "none";
+    loginForm.style.display = isLoginHidden ? "block" : "none";
+    mainContent.style.display = isLoginHidden ? "none" : "block";
+}
+
+
 async function check_logged_in() {
     let response = await fetch("https://hackathon.midnight.wtf/auth/verify", {
         method: "GET",
-        credentials: "include",
-        mode: "cors",
+        credentials: "include"
     });
-    if (response.ok) {
-        return true;
-
-    } else {
-        return false;
-    }
+    return response.ok;
 }
 
 // Function to fetch data from URL and display it
 async function fetchData(query = "") {
-    if (query === "") {
-        query = document.getElementById("searchBar").value;
-    }
-    // const url = `http://10.125.190.27:8000/search/${query}`;
-    const url = `https://hackathon.midnight.wtf/search/${encodeURIComponent(query)}`;
+    // "clamps" the search string to the input box if it's empty
+    const to_search =  query === "" ? document.getElementById("search_bar").value : query;
+    const url = API_URL + `search/${encodeURIComponent(to_search)}`;
     const response = await fetch(url, {
-        method: "GET",  // Using GET method
-        credentials: "include",  // Important: Include credentials (cookies)
-        headers: {
-            "Content-Type": "application/json"  // Add content type if necessary
-        }
+        method: "GET",
+        credentials: "include"
     });
     const data = await response.text();
     // Display data in #displayArea
