@@ -9,3 +9,4 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 	    browser.tabs.create({ url: `http://localhost:6068/${encodeURIComponent(info.selectionText)}` });
 	}
 });
+

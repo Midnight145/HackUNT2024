@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="popup.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown with Search Bar</title>
+    <style>
+        /* CSS to style the dropdown content */
+
+    </style>
+</head>
+<body>
+<script src="popup.js"></script>
+    <div id="loginForm">
+        <h3>Login</h3>
+        <input type="text" id="username" placeholder="Username"><br><br>
+        <input type="password" id="password" placeholder="Password"><br><br>
+        <button id="loginButton">Login</button>
+    </div>
+
+    <div id="mainContent">
+        <!-- Dropdown content here -->
+        <p>Search Item Below</p>
+        <div class="search-container">
+         <input type="text" id="searchBar" placeholder="Search..." >
+         <button id="searchButton">Search</button>
+        </div>
+         <!-- Area to display fetched data -->
+         <div id="displayArea"></div>
+    </div>
+</body>
+</html>
