@@ -197,8 +197,8 @@ async function fetchData(click, query = "") {
         starContainer.children[i].classList.add("full");
     }
     if (Math.round(json.stars) != Math.floor(json.stars)) {
-        starContainer.children[Math.round(json.stars) + 1].classList.add("half");
-        starContainer.children[Math.round(json.stars) + 1].classList.remove("full");
+        starContainer.children[Math.round(json.stars)].classList.add("half");
+        starContainer.children[Math.round(json.stars)].classList.remove("full");
     }
 
     document.getElementById("top-pos").innerHTML = `${json.highest[1]}`;
