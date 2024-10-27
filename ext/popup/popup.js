@@ -6,7 +6,7 @@ browser.runtime.onMessage.addListener(async (message) => {
     // We basically "emulate" the search button click, or display the login form
     if (message.search_str) {
         if (await check_logged_in()) {
-            await fetchData(message.search_str);
+            await fetchData(null, message.search_str);
         } else {
             await login();
         }
@@ -16,16 +16,54 @@ browser.runtime.onMessage.addListener(async (message) => {
 
 document.addEventListener('DOMContentLoaded',
   async function () {
-        if (await check_logged_in()) {
+    let token = await check_logged_in();
+        if (token) {
             // defaults to the login screen, we want to skip it if we're already logged in
             toggle_display();
+            await get_history(token);
         }
         document.getElementById("loginButton").addEventListener("click", login);
         document.getElementById("searchButton").addEventListener("click", fetchData);
         document.getElementById("logoutButton").addEventListener("click", logout);
 
+
+
     }, false
 );
+
+async function get_history(token) {
+    const url = API_URL + `db/fetch_user/` + token.token.sub;
+    let resp = await fetch(url, {
+        method: "GET",
+        credentials: 'include'
+    });
+    if (resp.ok) {
+        let data = await resp.json();
+        seen = data.seen_products
+        // reverse it
+        seen = seen.reverse();
+        // get first 5
+        if (seen.length > 5) {
+            seen = seen.slice(0, 5);
+        }
+
+        let history = document.getElementById("historyList");
+        history.innerHTML = "";
+        for (item in seen) {
+            const url = API_URL + `db/fetch_product/` + seen[item];
+            resp = await fetch(url, {
+                method: "GET",
+                credentials: 'include'
+            });
+            if (!resp.ok) { continue; }
+            let data = await resp.json();
+            let li = document.createElement("li");
+                li.className = "history-item";
+                li.textContent = data.product_name;
+                history.appendChild(li);
+        }
+    }
+}
 
 async function logout() {
     const url = API_URL + `auth/logout`;
@@ -76,13 +114,19 @@ async function check_logged_in() {
         method: "GET",
         credentials: "include"
     });
-    return response.ok;
+    if (response.ok) {
+        return await response.json();
+    }
+    return false;
 }
 
 // Function to fetch data from URL and display it
-async function fetchData(query = "") {
+async function fetchData(click, query = "") {
     // "clamps" the search string to the input box if it's empty
     const to_search =  query === "" ? document.getElementById("search_bar").value : query;
+    console.log(to_search);
+    console.log(query);
+    console.log(document.getElementById("search_bar").value);
     const url = API_URL + `search/${encodeURIComponent(to_search)}`;
     const response = await fetch(url, {
         method: "GET",
