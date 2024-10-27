@@ -116,7 +116,7 @@ def login_helper(login_data: LoginModel) -> str | None:
 
 @route.post("/auth/login")
 def login(login_data: LoginModel, resp: Response) -> dict:
-    if sub := login_helper(login_data) is not None:
+    if (sub := login_helper(login_data)) is not None:
         resp.status_code = 200
         resp.set_cookie(
             "session_id",
@@ -134,15 +134,15 @@ def login(login_data: LoginModel, resp: Response) -> dict:
 def register(login_data: LoginModel, resp: Response) -> dict:
     user = register_username_password(login_data.username, login_data.password)
     if user:  # registration successful, log in
-        if sub := login_helper(login_data) is not None:
+        if (sub := login_helper(login_data)) is not None:
             resp.status_code = 200
             resp.set_cookie(
                 "session_id",
                 value=create_session_cookie({"sub": sub}),
                 httponly=True,
                 secure=True,
-                samesite="lax",
-                path="/"
+                samesite="none",
+                path="/",
             )
 
             # this is a new user, we need to add them to the database
@@ -160,7 +160,7 @@ def register(login_data: LoginModel, resp: Response) -> dict:
 
 @route.get("/auth/logout")
 def logout(resp: Response) -> dict:
-    resp.delete_cookie("session_id")
+    resp.delete_cookie("session_id", samesite="none", path="/", secure=True, httponly=True)
     return {"message": "Logged out"}
 
 
