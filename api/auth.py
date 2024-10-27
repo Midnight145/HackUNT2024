@@ -87,7 +87,7 @@ def login(login_data: Login, resp: Response, request: Request):
                 value=create_session_cookie({"sub": token["sub"]}),
                 httponly=True,
                 secure=True,
-                samesite="lax",
+                samesite="none",
                 path="/"
             )
 
