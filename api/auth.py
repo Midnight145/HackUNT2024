@@ -12,6 +12,7 @@ from api.db import push_item
 
 dotenv.load_dotenv()
 route = APIRouter()
+allowed_origins = []
 
 AUTH0_DOMAIN = os.getenv("DOMAIN")
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -72,7 +73,10 @@ def verify_token(token):
         return None
 
 @route.post("/auth/login")
-def login(login_data: Login, resp: Response):
+def login(login_data: Login, resp: Response, request: Request):
+    origin = request.headers.get("origin")
+    if origin and origin not in allowed_origins:
+        allowed_origins.append(origin)
     auth_response = login_with_username_password(login_data.username, login_data.password)
     if auth_response:
         token = verify_login(auth_response)

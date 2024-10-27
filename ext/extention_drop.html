@@ -40,7 +40,7 @@
         }
 
         #searchButton, p{
-            margin-top: 5px 10px;
+            margin-top: 10px;
             margin-left: 5px; /*some sapce between bar and button*/
         }
     </style>
@@ -77,12 +77,29 @@
         });
 
         // Function to handle login
-        function login() {
+        async function login() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
-
+            const url = `http://10.125.190.27:8000/auth/login`;
+            const obj = {
+                username: username,
+                password: password
+            }
+            // Send data to the server
+            resp = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj),
+                credentials: 'include',
+                mode: "cors",
+            })
+            // Get the response from the server
+            const data = await resp.json();
+            console.log(data);
             // Simple check for username and password (example: username="user" and password="pass")
-            if (username === "user" && password === "pass") {
+            if (resp.ok) {
                 alert("Login successful!");
                 document.getElementById("loginForm").style.display = "none";  // Hide login form
                 document.getElementById("mainContent").style.display = "block"; // Show main content
@@ -95,24 +112,19 @@
         async function fetchData() {
             const query = document.getElementById("searchBar").value;
             const url = `http://10.125.190.27:8000/search/${query}`;
-
-            //try {
-                const response = await fetch(url)
-                console.log("yeah");
-                const data = await response.text();
-                console.log(response);
-                console.log(data);
-                // Display data in #displayArea
-                document.getElementById("displayArea").innerHTML = `
-                    <h3>Search Results</h3>
-                    <p>${data}</p>
-                `;
-            /*} catch (err) {
-                document.getElementById("displayArea").innerHTML = `
-                    <p>Error fetching data. Please try again later.</p>
-                `;
-                console.error("Error:", err);
-            }*/
+            const response = await fetch(url, {
+                method: "GET",  // Using GET method
+                credentials: "include",  // Important: Include credentials (cookies)
+                headers: {
+                    "Content-Type": "application/json"  // Add content type if necessary
+            }
+});
+            const data = await response.text();
+            // Display data in #displayArea
+            document.getElementById("displayArea").innerHTML = `
+                <h3>Search Results</h3>
+                <p>${data}</p>
+            `;
         }
 
     </script>
