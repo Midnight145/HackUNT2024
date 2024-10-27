@@ -71,9 +71,22 @@
     <script>
         
         // Show the login form when the extension is opened
-        document.getElementById("extensionButton").addEventListener("click", function () {
-            document.getElementById("loginForm").style.display = "block";
-            document.getElementById("mainContent").style.display = "none";
+        document.getElementById("extensionButton").addEventListener("click", async function () {
+            let response = await fetch("https://hackathon.midnight.wtf/auth/verify", {
+                method: "GET",
+                credentials: "include",
+                mode: "cors",
+            });
+            if (response.ok) {
+                console.log("User is logged in");
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+
+            } else {
+                console.log("User is not logged in");
+                document.getElementById("loginForm").style.display = "block";
+                document.getElementById("mainContent").style.display = "none";
+            }
         });
 
         // Function to handle login
@@ -86,7 +99,7 @@
                 password: password
             }
             // Send data to the server
-            resp = await fetch(url, {
+            let resp = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -118,8 +131,8 @@
                 credentials: "include",  // Important: Include credentials (cookies)
                 headers: {
                     "Content-Type": "application/json"  // Add content type if necessary
-            }
-});
+                }
+            });
             const data = await response.text();
             // Display data in #displayArea
             document.getElementById("displayArea").innerHTML = `
